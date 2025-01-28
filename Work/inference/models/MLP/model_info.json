@@ -1,0 +1,39 @@
+{
+    "layers": [
+        {
+            "name": "fc1.weight",
+            "type": "weights",
+            "shape": [
+                500,
+                784
+            ],
+            "filename": "../../inference/models/MLP/layer_0_weights.bin"
+        },
+        {
+            "name": "fc1.bias",
+            "type": "bias",
+            "shape": [
+                500,1
+            ],
+            "filename": "../../inference/models/MLP/layer_1_bias.bin"
+        },
+        {
+            "name": "fc2.weight",
+            "type": "weights",
+            "shape": [
+                10,
+                500
+            ],
+            "filename": "../../inference/models/MLP/layer_2_weights.bin"
+        },
+        {
+            "name": "fc2.bias",
+            "type": "bias",
+            "shape": [
+                10,
+                1
+            ],
+            "filename": "../../inference/models/MLP/layer_3_bias.bin"
+        }
+    ]
+}
