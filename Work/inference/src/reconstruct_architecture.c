@@ -5,26 +5,28 @@
 #include "../include/cJSON.h"
 
 Layer* reconstruct_architecture(const char *json_file, int *num_layers) {
-    // Charger le fichier JSON
+    // Ouvrir le fichier JSON
     FILE *file = fopen(json_file, "r");
-    printf("fichier bien ouvert\n");
     if (!file) {
-        perror("Failed to open JSON file, wrong path?");
+        perror("Failed to open JSON file");
         exit(EXIT_FAILURE);
     }
 
+    // Lire tout le contenu du fichier en mémoire
     fseek(file, 0, SEEK_END);
     long length = ftell(file);
-    printf("longueur du fichier : %ld\n", length);
     fseek(file, 0, SEEK_SET);
-
     char *data = (char *)malloc(length + 1);
+    if (!data) {
+        fprintf(stderr, "Memory allocation error\n");
+        fclose(file);
+        exit(EXIT_FAILURE);
+    }
     fread(data, 1, length, file);
     fclose(file);
     data[length] = '\0';
 
-    // Parser le fichier JSON
-    printf("début du parsing\n");
+    // Parser le JSON
     cJSON *json = cJSON_Parse(data);
     if (!json) {
         printf("Error parsing JSON: %s\n", cJSON_GetErrorPtr());
@@ -32,8 +34,7 @@ Layer* reconstruct_architecture(const char *json_file, int *num_layers) {
         exit(EXIT_FAILURE);
     }
 
-    printf("Stockage des couches\n");
-
+    // Récupérer le tableau "layers"
     cJSON *layers = cJSON_GetObjectItem(json, "layers");
     if (!layers) {
         printf("JSON does not contain 'layers' key\n");
@@ -41,40 +42,99 @@ Layer* reconstruct_architecture(const char *json_file, int *num_layers) {
         cJSON_Delete(json);
         exit(EXIT_FAILURE);
     }
-    
+
+    // Combien de couches ?
     *num_layers = cJSON_GetArraySize(layers);
-    printf("nombre de couches : %d\n", *num_layers);
+
+    // Allouer le tableau de Layer
     Layer *model_layers = (Layer *)malloc((*num_layers) * sizeof(Layer));
-    printf("Récupératon des informations des couches\n");
-    for (int i = 0; i < *num_layers; i++) {
-        printf("couche %d\n", i);
-        cJSON *layer = cJSON_GetArrayItem(layers, i);
-        printf("Information globale récupérée\n");
-
-        // Extraire les informations de la couche
-        printf("Extraction du nom et du type de la couche\n");
-        strcpy(model_layers[i].name, cJSON_GetObjectItem(layer, "name")->valuestring);
-        strcpy(model_layers[i].type, cJSON_GetObjectItem(layer, "type")->valuestring);
-
-        printf("extraction de la forme de la couche\n");
-        cJSON *shape = cJSON_GetObjectItem(layer, "shape");
-        model_layers[i].shape[0] = cJSON_GetArrayItem(shape, 0)->valueint;
-        model_layers[i].shape[1] = cJSON_GetArrayItem(shape, 1)->valueint;
-        printf("extraction du nom du fichier\n");
-        strcpy(model_layers[i].filename, cJSON_GetObjectItem(layer, "filename")->valuestring);
-        printf("Check fonction d'activation ou pas\n");
-        cJSON *activation = cJSON_GetObjectItem(layer, "activation");
-        if (activation) {
-            printf("extraction de la fonction d'activation\n");
-            strcpy(model_layers[i].activation, activation->valuestring);
-        } else {
-            printf("pas de fonction d'activation\n");
-            strcpy(model_layers[i].activation, "None");
-        }
-        printf("fin de la couche\n");
+    if (!model_layers) {
+        fprintf(stderr, "Memory allocation error for model_layers\n");
+        free(data);
+        cJSON_Delete(json);
+        exit(EXIT_FAILURE);
     }
 
-    // Nettoyage
+    // Parcourir chaque objet-couche
+    for (int i = 0; i < *num_layers; i++) {
+
+        cJSON *layer_obj = cJSON_GetArrayItem(layers, i);
+        if (!layer_obj) {
+            fprintf(stderr, "Invalid layer index %d in JSON\n", i);
+            free(data);
+            cJSON_Delete(json);
+            free(model_layers);
+            exit(EXIT_FAILURE);
+        }
+
+        // 1) layer_index
+        cJSON *item = cJSON_GetObjectItem(layer_obj, "layer_index");
+        if (cJSON_IsNumber(item)) {
+            model_layers[i].layer_index = item->valueint;
+        } else {
+            // S'il n'y est pas, on met -1 ou un autre défaut
+            model_layers[i].layer_index = -1;
+        }
+
+        // 2) class_name
+        item = cJSON_GetObjectItem(layer_obj, "class_name");
+        if (cJSON_IsString(item)) {
+            strcpy(model_layers[i].class_name, item->valuestring);
+        } else {
+            strcpy(model_layers[i].class_name, "Unknown");
+        }
+
+        // 3) weight_file
+        item = cJSON_GetObjectItem(layer_obj, "weight_file");
+        if (cJSON_IsString(item)) {
+            strcpy(model_layers[i].weight_file, item->valuestring);
+        } else {
+            // Vide si absent
+            model_layers[i].weight_file[0] = '\0';
+        }
+
+        // 4) weight_shape
+        model_layers[i].weight_shape_len = 0;
+        cJSON *weight_shape_arr = cJSON_GetObjectItem(layer_obj, "weight_shape");
+        if (cJSON_IsArray(weight_shape_arr)) {
+            int arr_size = cJSON_GetArraySize(weight_shape_arr);
+            model_layers[i].weight_shape_len = arr_size > 4 ? 4 : arr_size; // Pour éviter de déborder
+            for (int k = 0; k < model_layers[i].weight_shape_len; k++) {
+                cJSON *val = cJSON_GetArrayItem(weight_shape_arr, k);
+                model_layers[i].weight_shape[k] = val->valueint;
+            }
+        }
+
+        // 5) bias_file
+        item = cJSON_GetObjectItem(layer_obj, "bias_file");
+        if (cJSON_IsString(item)) {
+            strcpy(model_layers[i].bias_file, item->valuestring);
+        } else {
+            model_layers[i].bias_file[0] = '\0';
+        }
+
+        // 6) bias_shape
+        model_layers[i].bias_shape_len = 0;
+        cJSON *bias_shape_arr = cJSON_GetObjectItem(layer_obj, "bias_shape");
+        if (cJSON_IsArray(bias_shape_arr)) {
+            int arr_size = cJSON_GetArraySize(bias_shape_arr);
+            model_layers[i].bias_shape_len = arr_size > 4 ? 4 : arr_size;
+            for (int k = 0; k < model_layers[i].bias_shape_len; k++) {
+                cJSON *val = cJSON_GetArrayItem(bias_shape_arr, k);
+                model_layers[i].bias_shape[k] = val->valueint;
+            }
+        }
+
+        // 7) activation
+        item = cJSON_GetObjectItem(layer_obj, "activation");
+        if (cJSON_IsString(item)) {
+            strcpy(model_layers[i].activation, item->valuestring);
+        } else {
+            strcpy(model_layers[i].activation, "None");
+        }
+    }
+
+    // Libérer data, et supprimer l'objet JSON
     free(data);
     cJSON_Delete(json);
 

@@ -24,7 +24,7 @@ transform = transforms.Compose([
     #transforms.Normalize((0.5,), (0.5,))
 ])
 
-
+print("Loading dataset...")
 train_dataset = CustomMNISTDataset(data_path_train, transform=transform)
 train_loader = DataLoader(train_dataset, batch_size=10, shuffle=True)
 
@@ -33,7 +33,7 @@ test_dataset = CustomMNISTDataset(data_path_test, transform=transform)
 test_loader = DataLoader(test_dataset, batch_size=2, shuffle=False)
 
 
-
+print("Dataset loaded")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = SimpleNN().to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
@@ -42,7 +42,7 @@ criterion = nn.CrossEntropyLoss()
 print(f"{len(test_loader)=}")
 print(f"{len(train_loader)=}")
 
-
+print("<======Start training======>")
 num_epochs = 10
 
 for epoch in range(num_epochs):
@@ -52,4 +52,7 @@ for epoch in range(num_epochs):
     print(f"  Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.2f}%")
     print(f"  Test Loss: {test_loss:.4f}, Test Accuracy: {test_accuracy:.2f}%")
 
-export_model_info(model, "../models/SimpleNN")
+print("<======End training======>")
+print("Saving model...")
+export_model_info(model, "../../inference/models/SimpleNN")
+print(f"Model saved in ../../inference/models/SimpleNN")

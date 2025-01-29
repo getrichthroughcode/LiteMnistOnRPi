@@ -18,12 +18,24 @@
 void load_model(const char *filename, float *weights, size_t num_weights);
 
 typedef struct {
-    char name[50];
-    char type[10];
-    int shape[2];
-    char filename[100];
-    char activation[10];
+    int  layer_index;
+    char class_name[50];
+
+    // Poids
+    char weight_file[200];
+    int  weight_shape[4];      // ex: [500, 784], ou [10, 500], etc.
+    int  weight_shape_len;     // taille réelle du tableau weight_shape
+
+    // Biais
+    char bias_file[200];
+    int  bias_shape[4];
+    int  bias_shape_len;
+
+    // Activation
+    char activation[20];
+
 } Layer;
+
 
 Layer* reconstruct_architecture(const char *json_file, int *num_layers);
 
