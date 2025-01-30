@@ -13,7 +13,7 @@ Pour exécuter, tapez : /
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Bmp2Matrix.h"
+#include "../include/Bmp2Matrix.h"
 
 // Fonction permettant de convertir une image lue en RBG vers un signal en niveau de gris accessible depuis la structure BMP
 void ConvertRGB2Gray(BMP* pBitmap){
