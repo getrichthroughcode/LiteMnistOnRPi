@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     // -----------------------------------------------------------------
     // 1) Chemins par défaut (JSON + BMP). L’utilisateur peut les modifier via argv.
     // -----------------------------------------------------------------
-    const char *json_file = "../models/SimpleNN/model_info.json";
+    const char *json_file = "../models/SimpleNNbmp/model_info.json";
     const char *bmp_file  = "../data/1_8.bmp";
 
     // Si l'utilisateur fournit des arguments :

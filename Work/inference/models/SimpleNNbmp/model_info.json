@@ -3,12 +3,12 @@
         {
             "layer_index": 0,
             "class_name": "Linear",
-            "weight_file": "../../inference/models/SimpleNNbmp/layer_0_weight.bin",
+            "weight_file": "inference/models/SimpleNNbmp/layer_0_weight.bin",
             "weight_shape": [
                 500,
                 784
             ],
-            "bias_file": "../../inference/models/SimpleNNbmp/layer_0_bias.bin",
+            "bias_file": "inference/models/SimpleNNbmp/layer_0_bias.bin",
             "bias_shape": [
                 500,
                 1
@@ -24,12 +24,12 @@
         {
             "layer_index": 2,
             "class_name": "Linear",
-            "weight_file": "../../inference/models/SimpleNNbmp/layer_2_weight.bin",
+            "weight_file": "inference/models/SimpleNNbmp/layer_2_weight.bin",
             "weight_shape": [
                 10,
                 500
             ],
-            "bias_file": "../../inference/models/SimpleNNbmp/layer_2_bias.bin",
+            "bias_file": "inference/models/SimpleNNbmp/layer_2_bias.bin",
             "bias_shape": [
                 10,
                 1

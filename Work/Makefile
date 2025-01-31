@@ -55,7 +55,7 @@ $(TARGET): $(OBJS)
 #--------------------------------------------------------------------------
 inference: $(TARGET)
 	@echo "===== Exécution du binaire d'inférence ====="
-	$(TARGET)
+	$(TARGET) "inference/models/SimpleNNbmp/model_info.json" "inference/data/1_8.bmp"
 	@echo "===== Fin de l'inférence ====="
 
 #--------------------------------------------------------------------------
