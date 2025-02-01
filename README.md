@@ -92,7 +92,7 @@ Au-delà des librairies « classiques » (PyTorch, GCC, etc.) mentionnées plus 
    ```bash
    git clone https://github.com/getrichthroughcode/LiteMnistOnRpi.git
    cd LiteMnistOnRpi/Work
-2. **Lancer le pipeline complet(train → compile → inference) :
+2. **Lancer le pipeline complet(train → compile → inference):**
     ```bash
     make
 ### 5.2 Exécution sur la Raspberry Pi 
