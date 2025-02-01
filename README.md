@@ -96,7 +96,7 @@ Work/
 2. **Lancer le pipeline complet(train → compile → inference):**
     ```bash
     make
-### 5.2 Exécution sur la Raspberry Pi 
+### 5.2 Exécution sur la Raspberry Pi (Pour Mr Chatrie uniquement)
 Une fois connecté à notre session sur la Pi, placez vous dans le dossier 
 ```bash
 cd student/Work/

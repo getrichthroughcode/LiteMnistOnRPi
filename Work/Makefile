@@ -15,8 +15,8 @@ OBJS = $(SRCS:.c=.o)
 TARGET = inference/build/test
 
 # Variables pour la partie Python
-TRAIN_SCRIPT = training/src/main.py  # ou autre script de training
-PYTHON = python3  # commande Python
+TRAIN_SCRIPT = training/src/main.py  
+PYTHON = python3  
 
 .PHONY: all train compile inference clean
 
