@@ -124,5 +124,5 @@ class SimpleNN(nn.Module):
         return self.fc2(x)
 ``` 
 ## **6. Contributeurs**
-    - Diallo Abdoulaye
-    - Krumm Lorenzo
+    - Diallo Abdoulaye (abdoulaye.diallo@bordeaux-inp.fr)
+    - Krumm Lorenzo    (lorenzo.krumm@bordeaux-inp.fr)
