@@ -15,7 +15,8 @@ Au-delà des librairies « classiques » (PyTorch, GCC, etc.) mentionnées plus 
 ---
 
 ## **2. Structure de notre contribution dans le projet**
->Work/
+```plain text
+Work/
 ├── training
 │   ├── data/
 │   │   ├── bmpProcessed/    <– Dossier contenant les images d’entraînement/test (format BMP)
@@ -45,7 +46,7 @@ Au-delà des librairies « classiques » (PyTorch, GCC, etc.) mentionnées plus 
 │   └── SimpleNNbmp/      <– Dossier où sont exportés les poids (binaires) + model_info.json
 └── build/
 └── test              <– Binaire généré
-
+```
 ---
 
 ## **3. Fonctionnalités principales**
